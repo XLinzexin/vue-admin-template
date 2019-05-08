@@ -34,6 +34,13 @@ export const asyncRouterMap = [
         icon: ''
       },
       component: () => import('@/pages/dashboard/index')
+    }, {
+      path: 'list',
+      meta: {
+        title: '仪表盘',
+        icon: ''
+      },
+      component: () => import('@/pages/dashboard/list')
     }]
   }
 ]
