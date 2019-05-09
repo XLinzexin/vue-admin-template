@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueUeditorWrap from 'vue-ueditor-wrap'
+import config from './editor.config.json'
 // 或者在 main.js 里将它注册为全局组件
 window.UEDITOR_HOME_URL = '/UEditor/'
 
@@ -58,6 +59,9 @@ function timeout (ms) {
 }
 export const checkRegister = async () => {
   if (window.UE && window.UE.registerUI) {
+    if (!hasChangeAjax) {
+      await changeUEAjax()
+    }
     return true
   } else {
     await timeout(100)
@@ -65,27 +69,38 @@ export const checkRegister = async () => {
     return res
   }
 }
-
+// 修改ueditor的请求，实现前后端分离
+let hasChangeAjax = false
 async function changeUEAjax () {
-  await checkRegister()
   const { UE } = window
   const { Editor, ajax } = UE
-  const EditorGetOpt = Editor.getOpt
-  Editor.getOpt = function (key) {
+  const EditorGetOpt = Editor.prototype.getOpt
+  const serverUrl = `${config.domian}/ueditor/php/controller.php`
+  Editor.prototype.getOpt = function (key) {
     if (key === 'serverUrl') {
-      return ''
+      return serverUrl
     } else {
-      return EditorGetOpt(key)
+      return EditorGetOpt.bind(this)(key)
     }
   }
+  // Editor.prototype.getActionUrl = function (action) {
+  //   return action
+  // }
   const { request } = ajax
   UE.ajax.request = function (url, opts) {
-    console.log(url, opts)
-    const {onsuccess} = opts
-    request(url, opts)
+    const configList = [`${serverUrl}?action=config`,
+      `${serverUrl}?action=image`,
+      `${serverUrl}?action=scrawl`,
+      `${serverUrl}?action=imageManager`]
+    const { onsuccess } = opts
+    if (configList.includes(url)) {
+      onsuccess(config)
+    } else {
+      request(url, opts)
+    }
   }
+  hasChangeAjax = true
 }
-changeUEAjax()
 // 添加秀米插件
 export const addXiumi = async () => {
   await new Promise((resolve) => {
