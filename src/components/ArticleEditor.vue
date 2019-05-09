@@ -1,13 +1,13 @@
 <template>
   <div>
     <vue-ueditor-wrap
+      v-if="show"
       v-model="msg"
       :config="config" />
   </div>
 </template>
 <script>
 import { addXiumi } from './editor'
-addXiumi()
 export default {
   data () {
     return {
@@ -23,16 +23,19 @@ export default {
           'directionalityltr', 'directionalityrtl', 'indent', '|',
           'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
           'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-          'simpleupload', 'insertimage', 'insertvideo', '|'
+          'simpleupload', 'insertimage', 'insertvideo', '|', 'xiumi-connect'
         ]],
         minFrameWidth: 1000,
-        initialFrameWidth: 800,
+        initialFrameWidth: 750,
         initialFrameHeight: 2000,
         elementPathEnabled: false
-      }
+      },
+      show: false
     }
   },
   async created () {
+    await addXiumi()
+    this.show = true
   }
 }
 </script>
