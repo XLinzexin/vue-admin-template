@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import ArticleEditor from '@/components/ArticleEditor'
+import ArticleEditor from '@/components/ueditor/article'
 export default {
   components: { ArticleEditor }
 }

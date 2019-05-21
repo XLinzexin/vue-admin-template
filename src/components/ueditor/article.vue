@@ -1,37 +1,59 @@
 <template>
   <div>
     <vue-ueditor-wrap
+      v-if="show"
       v-model="msg"
       :config="config" />
   </div>
 </template>
 <script>
-import { } from './editor'
+import { addXiumi, addMinProgram } from './editor'
 export default {
+  props: {
+    value: {
+      type: String,
+      default: ''
+    }
+  },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   data () {
     return {
       msg: '',
       config: {
-        UEDITOR_HOME_URL: '/UEditor/',
-        serverUrl: '/UEditor/php/controller.php',
+        UEDITOR_HOME_URL: window.UEDITOR_HOME_URL,
+        serverUrl: window.serverUrl,
         toolbars: [[
-          'fullscreen', 'undo', 'redo', '|',
+          'undo', 'redo', '|',
           'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
           'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
           'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
           'directionalityltr', 'directionalityrtl', 'indent', '|',
           'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
           'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-          'simpleupload', 'insertimage', 'emotion', 'insertvideo', '|'
+          'simpleupload', 'insertimage', '|', 'xiumi-connect', 'minprogram'
         ]],
         minFrameWidth: 1000,
-        initialFrameWidth: 800,
-        initialFrameHeight: 2000,
-        elementPathEnabled: false
-      }
+        initialFrameWidth: 480,
+        initialFrameHeight: 696,
+        elementPathEnabled: false,
+        autoHeightEnabled: false
+      },
+      show: false
+    }
+  },
+  watch: {
+    msg () {
+      this.$emit('change', this.msg)
     }
   },
   async created () {
+    await addXiumi()
+    // await addMinProgram()
+    this.msg = this.value
+    this.show = true
   }
 }
 </script>

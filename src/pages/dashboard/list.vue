@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import TextEditor from '@/components/TextEditor'
+import TextEditor from '@/components/ueditor/text'
 export default {
   components: { TextEditor }
 }
